@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>書籤詩句</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #ffffff;
+      font-family: "Noto Serif TC", serif;
+      color: #1f1f1f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .poem-container {
+      max-width: 600px;
+      padding: 20px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .main-line {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin: 10px 0;
+    }
+
+    .context-line {
+      font-size: 1.05rem;
+      color: #4a4a4a;
+    }
+
+    .highlight {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #000;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .shuffle {
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: orange;
+      color: white;
+      font-weight: bold;
+    }
+
+    .btn-fb {
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn-ig {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn-threads {
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="poem-container">
+    <div class="context-line" id="preContext">000</div>
+    <div class="main-line" id="mainLine"></div>
+    <div class="context-line" id="postContext">000</div>
+  </div>
+
+  <div class="buttons">
+    <button class="shuffle" id="shuffleBtn">換一首</button>
+    <button class="btn-fb" id="fbBtn">分享 FB</button>
+    <button class="btn-ig" id="igBtn">分享 IG</button>
+    <button class="btn-threads" id="threadsBtn">分享 Threads</button>
+  </div>
+
+  <script>
+    const poems = [
+      { main: `所謂時間的壓迫感/是我們太多的愛。` },
+      { main: `「列車長來剪票了不知為什麼/他說了謝謝又說旅途愉快/而那正是我想對你說的」` },
+      { main: `「經驗已經總結出了千萬條，/我們的智慧從來沒有長進過。」` },
+      { main: `「所謂「想念」 /就是一種 永恆當機的狀態」` },
+      { main: `「望著窗外，只要想起一生中後悔的事/梅花便落滿了南山」` },
+      { main: `「除了人/現在我什麼都想冒充」` },
+      { main: `「寫「心」這個字/需要兩片完全相同的樹葉/和一塊手形的雲。」` },
+      { main: `「比浩浩的長風更遠的/是天邊的陰雲/比黯黯的陰雲更遠的/是樓上的眼睛」` },
+      { main: `「我不能/不願再說一句狠話//被你祝福過的每把刀子，此刻都搖搖晃晃……」楊` },
+    ];
+
+    function formatWithSlash(text) {
+      return text
+        .split(/\/+/)
+        .map(s => s.trim())
+        .join('<br>');
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function renderPoem() {
+      const { main } = pickRandom(poems);
+      document.getElementById('mainLine').innerHTML = formatWithSlash(main);
+    }
+
+    renderPoem();
+    document.getElementById('shuffleBtn').addEventListener('click', renderPoem);
+
+    function getCurrentPoemText() {
+      return document.getElementById('preContext').innerText + "\n" +
+             document.getElementById('mainLine').innerText + "\n" +
+             document.getElementById('postContext').innerText;
+    }
+
+    document.getElementById('fbBtn').addEventListener('click', () => {
+      const text = encodeURIComponent(getCurrentPoemText());
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${location.href}&quote=${text}`;
+      window.open(url, '_blank');
+    });
+
+    document.getElementById('igBtn').addEventListener('click', () => {
+      const text = encodeURIComponent(getCurrentPoemText());
+      alert("Instagram 不支援直接貼文分享，請手動貼上詩句：\n\n" + decodeURIComponent(text));
+      window.open("https://www.instagram.com/", "_blank");
+    });
+
+    document.getElementById('threadsBtn').addEventListener('click', () => {
+      const text = encodeURIComponent(getCurrentPoemText());
+      const url = `https://www.threads.net/intent/post?text=${text}`;
+      window.open(url, '_blank');
+    });
+  </script>
+</body>
+</html>
